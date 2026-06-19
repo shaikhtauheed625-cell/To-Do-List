@@ -81,12 +81,20 @@ try {
 
             $stmt = $pdo->prepare("INSERT INTO tasks (title, description, priority, due_date, assigned_to, created_by, phone, project_id) VALUES (?, ?, ?, ?, ?, ?, ?, ?)");
             $stmt->execute([$title, $description, $priority, $due_date, $assigned_to, $user_id, $phone, $project_id]);
+            $taskId = $pdo->lastInsertId();
+
+            // Insert reminder if specified
+            if (!empty($data['reminder_time'])) {
+                $reminder_time = sanitize_input($data['reminder_time']);
+                $reminderStmt = $pdo->prepare("INSERT INTO reminders (task_id, user_id, reminder_time, type) VALUES (?, ?, ?, 'browser')");
+                $reminderStmt->execute([$taskId, $user_id, $reminder_time]);
+            }
             
             // Log activity
             $logStmt = $pdo->prepare("INSERT INTO activity_logs (user_id, action, details) VALUES (?, 'Created task', ?)");
             $logStmt->execute([$user_id, $title]);
 
-            echo json_encode(['success' => true, 'message' => 'Task created successfully', 'id' => $pdo->lastInsertId()]);
+            echo json_encode(['success' => true, 'message' => 'Task created successfully', 'id' => $taskId]);
             break;
 
         case 'PUT':
@@ -167,6 +175,32 @@ try {
                 }
                 $logStmt = $pdo->prepare("INSERT INTO activity_logs (user_id, action, details) VALUES (?, ?, ?)");
                 $logStmt->execute([$user_id, $action, $task['title']]);
+            }
+
+            // Upsert / Delete reminder if reminder_time is provided in the request
+            if (isset($data['reminder_time'])) {
+                $reminder_time = !empty($data['reminder_time']) ? sanitize_input($data['reminder_time']) : null;
+
+                if ($reminder_time) {
+                    // Check if an unsent reminder already exists for this task
+                    $checkReminder = $pdo->prepare("SELECT id FROM reminders WHERE task_id = ? AND user_id = ? AND is_sent = 0");
+                    $checkReminder->execute([$id, $user_id]);
+                    $existingReminder = $checkReminder->fetch();
+
+                    if ($existingReminder) {
+                        // Update existing unsent reminder
+                        $updateReminder = $pdo->prepare("UPDATE reminders SET reminder_time = ? WHERE id = ?");
+                        $updateReminder->execute([$reminder_time, $existingReminder['id']]);
+                    } else {
+                        // Insert new reminder
+                        $insertReminder = $pdo->prepare("INSERT INTO reminders (task_id, user_id, reminder_time, type) VALUES (?, ?, ?, 'browser')");
+                        $insertReminder->execute([$id, $user_id, $reminder_time]);
+                    }
+                } else {
+                    // If reminder_time is empty, delete any unsent reminder for this task
+                    $deleteReminder = $pdo->prepare("DELETE FROM reminders WHERE task_id = ? AND user_id = ? AND is_sent = 0");
+                    $deleteReminder->execute([$id, $user_id]);
+                }
             }
 
             echo json_encode(['success' => true, 'message' => 'Task updated successfully']);

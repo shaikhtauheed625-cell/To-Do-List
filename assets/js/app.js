@@ -122,3 +122,52 @@ function playCompletionSound() {
         console.log("Audio not supported or blocked", e);
     }
 }
+
+// Request browser notification permissions
+function requestNotificationPermission() {
+    if ('Notification' in window) {
+        if (Notification.permission === 'default') {
+            Notification.requestPermission();
+        }
+    }
+}
+
+// Check for due reminders periodically
+async function checkReminders() {
+    const res = await fetchAPI('api/reminders.php');
+    if (res && res.success && res.data && res.data.length > 0) {
+        res.data.forEach(reminder => {
+            showBrowserNotification(
+                `Task Reminder: ${reminder.title}`, 
+                reminder.description || 'You have a task reminder now!'
+            );
+        });
+    }
+}
+
+function showBrowserNotification(title, body) {
+    if (!('Notification' in window)) return;
+    
+    if (Notification.permission === 'granted') {
+        new Notification(title, {
+            body: body
+        });
+    } else if (Notification.permission !== 'denied') {
+        Notification.requestPermission().then(permission => {
+            if (permission === 'granted') {
+                new Notification(title, { body: body });
+            }
+        });
+    }
+}
+
+// Request permission on DOM load and poll every 30 seconds
+document.addEventListener('DOMContentLoaded', () => {
+    requestNotificationPermission();
+    
+    // Check every 30 seconds
+    setInterval(checkReminders, 30000);
+    
+    // Initial check after 3 seconds
+    setTimeout(checkReminders, 3000);
+});

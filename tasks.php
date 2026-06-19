@@ -12,23 +12,27 @@ $user_id = $_SESSION['user_id'];
 if (isAdmin()) {
     $stmt = $pdo->prepare("SELECT t.*, c.name as category_name, p.name as project_name,
                                   u_assign.username as assignee_name, u_assign.phone as assignee_phone,
-                                  u_create.username as creator_name, u_create.phone as creator_phone
+                                  u_create.username as creator_name, u_create.phone as creator_phone,
+                                  r.reminder_time
                            FROM tasks t 
                            LEFT JOIN categories c ON t.category_id = c.id 
                            LEFT JOIN projects p ON t.project_id = p.id 
                            LEFT JOIN users u_assign ON t.assigned_to = u_assign.id
                            LEFT JOIN users u_create ON t.created_by = u_create.id
+                           LEFT JOIN reminders r ON t.id = r.task_id AND r.is_sent = 0
                            ORDER BY t.created_at DESC");
     $stmt->execute();
 } else {
     $stmt = $pdo->prepare("SELECT t.*, c.name as category_name, p.name as project_name,
                                   u_assign.username as assignee_name, u_assign.phone as assignee_phone,
-                                  u_create.username as creator_name, u_create.phone as creator_phone
+                                  u_create.username as creator_name, u_create.phone as creator_phone,
+                                  r.reminder_time
                            FROM tasks t 
                            LEFT JOIN categories c ON t.category_id = c.id 
                            LEFT JOIN projects p ON t.project_id = p.id 
                            LEFT JOIN users u_assign ON t.assigned_to = u_assign.id
                            LEFT JOIN users u_create ON t.created_by = u_create.id
+                           LEFT JOIN reminders r ON t.id = r.task_id AND r.is_sent = 0
                            WHERE t.created_by = ? OR t.assigned_to = ? 
                            ORDER BY t.created_at DESC");
     $stmt->execute([$user_id, $user_id]);
@@ -272,6 +276,11 @@ include 'includes/sidebar.php';
                         <input type="date" id="taskDueDate" class="w-full px-3 py-2 border border-gray-200 dark:border-gray-700 rounded-lg focus:ring-2 focus:ring-blue-500 bg-white dark:bg-gray-800 text-gray-900 dark:text-white">
                     </div>
                 </div>
+
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1.5">Set Reminder Notification (Optional)</label>
+                    <input type="datetime-local" id="taskReminderTime" class="w-full px-3 py-2 border border-gray-200 dark:border-gray-700 rounded-lg focus:ring-2 focus:ring-blue-500 bg-white dark:bg-gray-800 text-gray-900 dark:text-white">
+                </div>
             </div>
 
             <!-- Fixed Footer -->
@@ -488,6 +497,13 @@ $custom_js = <<<'EOT'
         document.getElementById('taskDueDate').value = task.due_date ? task.due_date.substring(0, 10) : '';
         document.getElementById('taskAssignee').value = task.assigned_to || '';
         document.getElementById('taskPhone').value = task.phone || '';
+        
+        // Populate reminder field
+        if (task.reminder_time) {
+            document.getElementById('taskReminderTime').value = task.reminder_time.replace(' ', 'T').substring(0, 16);
+        } else {
+            document.getElementById('taskReminderTime').value = '';
+        }
 
         // Change modal labels
         const headerTitle = document.querySelector('#taskModal h3');
@@ -507,6 +523,7 @@ $custom_js = <<<'EOT'
         const dueDate = document.getElementById('taskDueDate').value;
         const assignee = document.getElementById('taskAssignee').value;
         const phone = document.getElementById('taskPhone').value;
+        const reminderTime = document.getElementById('taskReminderTime').value;
 
         const payload = {
             title: title,
@@ -514,7 +531,8 @@ $custom_js = <<<'EOT'
             priority: priority,
             due_date: dueDate,
             assigned_to: assignee,
-            phone: phone
+            phone: phone,
+            reminder_time: reminderTime || null
         };
 
         let result;
