@@ -1,0 +1,10 @@
+# Ignore user uploads
+uploads/profiles/*
+!uploads/profiles/.gitkeep
+
+# Ignore IDE files and OS files
+.idea/
+.vscode/
+Thumbs.db
+Desktop.ini
+.DS_Store
