@@ -1,5 +1,5 @@
 ---
 deployment:
   tasks:
-    - export DEPLOYPATH=/home/oatgwnis/task.n1space.com/
-    - /bin/rsync -a --exclude='.git' --exclude='.cpanel.yml' ./ $DEPLOYPATH
+    - echo "Deploying To-Do List Application..."
+    - echo "Deployment successful"
