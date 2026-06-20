@@ -2,8 +2,13 @@
 session_start();
 
 // Database Configuration
-if (file_exists(__DIR__ . '/db_config.php')) {
-    require_once __DIR__ . '/db_config.php';
+$prodDbConfig = dirname(__DIR__, 2) . '/db_config.php';
+$localDbConfig = __DIR__ . '/db_config.php';
+
+if (file_exists($prodDbConfig)) {
+    require_once $prodDbConfig;
+} elseif (file_exists($localDbConfig)) {
+    require_once $localDbConfig;
 } else {
     define('DB_HOST', 'localhost');
     define('DB_USER', 'root');
