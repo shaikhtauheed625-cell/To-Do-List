@@ -8,3 +8,12 @@ uploads/profiles/*
 Thumbs.db
 Desktop.ini
 .DS_Store
+
+# Ignore database configuration override
+config/db_config.php
+
+# Ignore server-generated files and logs
+.htaccess
+error_log
+*/error_log
+**/error_log
