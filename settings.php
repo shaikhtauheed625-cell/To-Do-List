@@ -202,6 +202,16 @@ include 'includes/sidebar.php';
                             <div class="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 dark:peer-focus:ring-blue-800 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-blue-600"></div>
                         </label>
                     </div>
+
+                    <div class="flex items-center justify-between border-t border-gray-100 dark:border-gray-800/60 pt-4">
+                        <div>
+                            <h4 class="text-sm font-medium text-gray-900 dark:text-white">Browser Notifications</h4>
+                            <p class="text-sm text-gray-500 dark:text-gray-400">Enable real-time task alerts on this device.</p>
+                        </div>
+                        <button type="button" id="enable-notifications-btn" onclick="enableBrowserNotifications()" class="px-4 py-1.5 bg-blue-600 hover:bg-blue-700 text-white rounded-lg text-xs font-semibold transition-colors">
+                            Enable
+                        </button>
+                    </div>
                     
                     <div class="flex items-center justify-between">
                         <div>

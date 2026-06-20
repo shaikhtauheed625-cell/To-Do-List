@@ -123,12 +123,35 @@ function playCompletionSound() {
     }
 }
 
-// Request browser notification permissions
-function requestNotificationPermission() {
+// Enable browser notifications on user click gesture
+function enableBrowserNotifications() {
     if ('Notification' in window) {
-        if (Notification.permission === 'default') {
-            Notification.requestPermission();
-        }
+        Notification.requestPermission().then(permission => {
+            updateNotificationButton(permission);
+            if (permission === 'granted') {
+                showBrowserNotification('Notifications Enabled!', 'You will now receive task reminders on this device.');
+            }
+        });
+    } else {
+        alert('Your browser does not support desktop notifications.');
+    }
+}
+
+function updateNotificationButton(permission) {
+    const btn = document.getElementById('enable-notifications-btn');
+    if (!btn) return;
+    if (permission === 'granted') {
+        btn.innerText = 'Enabled';
+        btn.disabled = true;
+        btn.className = 'px-4 py-1.5 bg-emerald-600 text-white rounded-lg text-xs font-semibold cursor-default';
+    } else if (permission === 'denied') {
+        btn.innerText = 'Blocked';
+        btn.disabled = true;
+        btn.className = 'px-4 py-1.5 bg-rose-600 text-white rounded-lg text-xs font-semibold cursor-default';
+    } else {
+        btn.innerText = 'Enable';
+        btn.disabled = false;
+        btn.className = 'px-4 py-1.5 bg-blue-600 hover:bg-blue-700 text-white rounded-lg text-xs font-semibold transition-colors';
     }
 }
 
@@ -152,18 +175,14 @@ function showBrowserNotification(title, body) {
         new Notification(title, {
             body: body
         });
-    } else if (Notification.permission !== 'denied') {
-        Notification.requestPermission().then(permission => {
-            if (permission === 'granted') {
-                new Notification(title, { body: body });
-            }
-        });
     }
 }
 
-// Request permission on DOM load and poll every 30 seconds
+// Request permission and poll every 30 seconds
 document.addEventListener('DOMContentLoaded', () => {
-    requestNotificationPermission();
+    if ('Notification' in window) {
+        updateNotificationButton(Notification.permission);
+    }
     
     // Check every 30 seconds
     setInterval(checkReminders, 30000);
