@@ -66,10 +66,11 @@ try {
                     $update = $pdo->prepare("UPDATE reminders SET reminder_time = DATE_ADD(NOW(), INTERVAL 3 HOUR) WHERE id = ?");
                     $update->execute([$r['id']]);
                     
-                    // Trigger WhatsApp background alert if key & phone are set
-                    if (!empty($r['user_phone']) && !empty($r['whatsapp_apikey'])) {
+                    // Trigger WhatsApp background alert if phone is set (falls back to default apikey '123123')
+                    if (!empty($r['user_phone'])) {
+                        $apikey = !empty($r['whatsapp_apikey']) ? $r['whatsapp_apikey'] : '123123';
                         $message = "Task Reminder: \"" . $r['task_title'] . "\" is still incomplete. Please finish it!";
-                        send_whatsapp_alert($r['user_phone'], $r['whatsapp_apikey'], $message);
+                        send_whatsapp_alert($r['user_phone'], $apikey, $message);
                     }
                     
                     $output[] = [
@@ -89,10 +90,11 @@ try {
                     $update = $pdo->prepare("UPDATE reminders SET reminder_time = DATE_ADD(NOW(), INTERVAL 3 HOUR) WHERE id = ?");
                     $update->execute([$r['id']]);
                     
-                    // Trigger WhatsApp background alert if key & phone are set
-                    if (!empty($r['user_phone']) && !empty($r['whatsapp_apikey'])) {
+                    // Trigger WhatsApp background alert if phone is set (falls back to default apikey '123123')
+                    if (!empty($r['user_phone'])) {
+                        $apikey = !empty($r['whatsapp_apikey']) ? $r['whatsapp_apikey'] : '123123';
                         $message = "Ticket Reminder: \"" . $r['ticket_title'] . "\" is still open/in-progress. Please resolve it!";
-                        send_whatsapp_alert($r['user_phone'], $r['whatsapp_apikey'], $message);
+                        send_whatsapp_alert($r['user_phone'], $apikey, $message);
                     }
                     
                     $output[] = [
