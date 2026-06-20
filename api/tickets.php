@@ -366,10 +366,15 @@ try {
                 $assigned_to = !empty($data['assigned_to']) ? intval($data['assigned_to']) : null;
 
                 // Auto-generate ticket number #TIC-xxxx
-                // Find current maximum ID to determine new number cleanly
-                $maxIdStmt = $pdo->query("SELECT MAX(id) as max_id FROM tickets");
-                $maxIdRow = $maxIdStmt->fetch();
-                $nextNum = ($maxIdRow && $maxIdRow['max_id']) ? ($maxIdRow['max_id'] + 1001) : 1001;
+                // Find highest existing ticket number prefix to determine new number cleanly
+                $maxTicketStmt = $pdo->query("SELECT ticket_number FROM tickets WHERE ticket_number LIKE '#TIC-%' ORDER BY CAST(SUBSTRING(ticket_number, 6) AS UNSIGNED) DESC LIMIT 1");
+                $maxTicketRow = $maxTicketStmt->fetch();
+                if ($maxTicketRow) {
+                    $lastNum = intval(substr($maxTicketRow['ticket_number'], 5));
+                    $nextNum = $lastNum + 1;
+                } else {
+                    $nextNum = 1001;
+                }
                 $ticketNumber = "#TIC-" . $nextNum;
 
                 $stmt = $pdo->prepare("INSERT INTO tickets (ticket_number, title, description, priority, due_date, assigned_to, created_by) VALUES (?, ?, ?, ?, ?, ?, ?)");
