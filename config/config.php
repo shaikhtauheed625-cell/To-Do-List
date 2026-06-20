@@ -122,6 +122,17 @@ try {
             FOREIGN KEY (`ticket_id`) REFERENCES `tickets`(`id`) ON DELETE CASCADE,
             FOREIGN KEY (`user_id`) REFERENCES `users`(`id`) ON DELETE CASCADE
         )");
+
+        // Check if ticket_id exists in reminders table, add if missing
+        try {
+            $checkColumn = $pdo->query("SHOW COLUMNS FROM reminders LIKE 'ticket_id'");
+            if (!$checkColumn->fetch()) {
+                $pdo->exec("ALTER TABLE reminders ADD COLUMN ticket_id INT NULL DEFAULT NULL");
+                $pdo->exec("ALTER TABLE reminders ADD CONSTRAINT fk_reminders_tickets FOREIGN KEY (ticket_id) REFERENCES tickets(id) ON DELETE CASCADE");
+            }
+        } catch (PDOException $ex) {
+            // Ignore
+        }
     } catch (PDOException $ex) {
         // Ignore
     }
