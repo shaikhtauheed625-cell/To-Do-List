@@ -14,6 +14,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $username = sanitize_input($_POST['username'] ?? '');
     $email = sanitize_input($_POST['email'] ?? '');
     $phone = sanitize_input($_POST['phone'] ?? '');
+    $whatsapp_apikey = sanitize_input($_POST['whatsapp_apikey'] ?? '');
 
     if (empty($username) || empty($email)) {
         $error_msg = 'Full Name and Email Address are required.';
@@ -70,8 +71,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 }
 
                 if (empty($error_msg)) {
-                    $update = $pdo->prepare("UPDATE users SET username = ?, email = ?, phone = ?, profile_image = ? WHERE id = ?");
-                    $update->execute([$username, $email, $phone, $profile_image, $user_id]);
+                    $update = $pdo->prepare("UPDATE users SET username = ?, email = ?, phone = ?, whatsapp_apikey = ?, profile_image = ? WHERE id = ?");
+                    $update->execute([$username, $email, $phone, $whatsapp_apikey, $profile_image, $user_id]);
                     
                     // Update session
                     $_SESSION['username'] = $username;
@@ -165,7 +166,7 @@ include 'includes/sidebar.php';
                             </div>
                         </div>
                         
-                        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                        <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
                             <div>
                                 <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1.5">Full Name</label>
                                 <input type="text" name="username" value="<?php echo htmlspecialchars($user_profile['username']); ?>" required class="w-full px-3 py-2 border border-gray-200 dark:border-gray-700 rounded-lg focus:ring-2 focus:ring-blue-500 bg-white dark:bg-gray-800 text-gray-900 dark:text-white">
@@ -177,7 +178,12 @@ include 'includes/sidebar.php';
                             <div>
                                 <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1.5">WhatsApp Phone Number</label>
                                 <input type="text" name="phone" value="<?php echo htmlspecialchars($user_profile['phone'] ?? ''); ?>" placeholder="e.g. +1234567890" class="w-full px-3 py-2 border border-gray-200 dark:border-gray-700 rounded-lg focus:ring-2 focus:ring-blue-500 bg-white dark:bg-gray-800 text-gray-900 dark:text-white">
-                                <p class="text-[10px] text-gray-400 mt-1">Include country code (e.g. +15551234567) without spaces or hyphens.</p>
+                                <p class="text-[10px] text-gray-400 mt-1">Include country code (e.g. +15551234567).</p>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1.5">WhatsApp API Key (CallMeBot)</label>
+                                <input type="text" name="whatsapp_apikey" value="<?php echo htmlspecialchars($user_profile['whatsapp_apikey'] ?? ''); ?>" placeholder="Enter API Key" class="w-full px-3 py-2 border border-gray-200 dark:border-gray-700 rounded-lg focus:ring-2 focus:ring-blue-500 bg-white dark:bg-gray-800 text-gray-900 dark:text-white">
+                                <p class="text-[10px] text-gray-400 mt-1">Get a free key from <a href="https://www.callmebot.com/" target="_blank" class="text-blue-500 hover:underline">callmebot.com</a>.</p>
                             </div>
                         </div>
                     </div>

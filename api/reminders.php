@@ -37,12 +37,14 @@ try {
         ");
         $syncTickets->execute([$user_id, $user_id, $user_id, $user_id]);
 
-        // Fetch all due, unsent reminders (both tasks and tickets) for the logged-in user
+        // Fetch all due, unsent reminders (both tasks and tickets) for the logged-in user with their profile info
         $stmt = $pdo->prepare("
-            SELECT r.id, r.task_id, r.ticket_id, r.reminder_time, 
+            SELECT r.id, r.task_id, r.ticket_id, r.reminder_time, r.user_id,
+                   u.phone as user_phone, u.whatsapp_apikey,
                    t.title as task_title, t.description as task_desc, t.status as task_status,
                    tk.title as ticket_title, tk.description as ticket_desc, tk.status as ticket_status
             FROM reminders r
+            JOIN users u ON r.user_id = u.id
             LEFT JOIN tasks t ON r.task_id = t.id
             LEFT JOIN tickets tk ON r.ticket_id = tk.id
             WHERE r.user_id = ? 
@@ -64,6 +66,12 @@ try {
                     $update = $pdo->prepare("UPDATE reminders SET reminder_time = DATE_ADD(NOW(), INTERVAL 3 HOUR) WHERE id = ?");
                     $update->execute([$r['id']]);
                     
+                    // Trigger WhatsApp background alert if key & phone are set
+                    if (!empty($r['user_phone']) && !empty($r['whatsapp_apikey'])) {
+                        $message = "Task Reminder: \"" . $r['task_title'] . "\" is still incomplete. Please finish it!";
+                        send_whatsapp_alert($r['user_phone'], $r['whatsapp_apikey'], $message);
+                    }
+                    
                     $output[] = [
                         'id' => $r['id'],
                         'task_id' => $r['task_id'],
@@ -80,6 +88,12 @@ try {
                     // Ticket is open/in_progress, notify and postpone by 3 hours
                     $update = $pdo->prepare("UPDATE reminders SET reminder_time = DATE_ADD(NOW(), INTERVAL 3 HOUR) WHERE id = ?");
                     $update->execute([$r['id']]);
+                    
+                    // Trigger WhatsApp background alert if key & phone are set
+                    if (!empty($r['user_phone']) && !empty($r['whatsapp_apikey'])) {
+                        $message = "Ticket Reminder: \"" . $r['ticket_title'] . "\" is still open/in-progress. Please resolve it!";
+                        send_whatsapp_alert($r['user_phone'], $r['whatsapp_apikey'], $message);
+                    }
                     
                     $output[] = [
                         'id' => $r['id'],

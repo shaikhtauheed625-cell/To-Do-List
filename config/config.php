@@ -43,6 +43,16 @@ try {
         // Ignore column addition error if it happens to exist/fail
     }
 
+    // Auto-migration: Check if 'whatsapp_apikey' column exists in 'users' table
+    try {
+        $checkColumnApikey = $pdo->query("SHOW COLUMNS FROM users LIKE 'whatsapp_apikey'");
+        if (!$checkColumnApikey->fetch()) {
+            $pdo->exec("ALTER TABLE users ADD COLUMN whatsapp_apikey VARCHAR(255) DEFAULT NULL");
+        }
+    } catch (PDOException $ex) {
+        // Ignore
+    }
+
     // Auto-migration: Check if 'phone' column exists in 'tasks' table
     try {
         $checkColumnTask = $pdo->query("SHOW COLUMNS FROM tasks LIKE 'phone'");
@@ -183,5 +193,25 @@ function getSetting($pdo, $key) {
     $stmt->execute([$key]);
     $result = $stmt->fetch();
     return $result ? $result['setting_value'] : null;
+}
+
+// Global WhatsApp Alert utility
+function send_whatsapp_alert($phone, $apikey, $message) {
+    if (empty($phone) || empty($apikey) || empty($message)) {
+        return false;
+    }
+    
+    // Clean phone number (CallMeBot wants digits only)
+    $cleanPhone = preg_replace('/[^\d]/', '', $phone);
+    
+    $url = "https://api.callmebot.com/whatsapp.php?phone=" . urlencode($cleanPhone) . "&text=" . urlencode($message) . "&apikey=" . urlencode($apikey);
+    
+    $ctx = stream_context_create([
+        'http' => [
+            'timeout' => 5
+        ]
+    ]);
+    
+    return @file_get_contents($url, false, $ctx) !== false;
 }
 ?>
