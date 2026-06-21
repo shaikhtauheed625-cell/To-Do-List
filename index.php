@@ -197,10 +197,12 @@ include 'includes/sidebar.php';
                         <span class="inline-flex items-center gap-1.5 px-3 py-1 bg-cyan-500/10 text-cyan-400 rounded-full text-[10px] font-bold tracking-widest uppercase border border-cyan-500/20 animate-pulse shrink-0">
                             <i class="ph-bold ph-lightning"></i> Motivation
                         </span>
-                        <div class="flex items-center gap-2 max-w-full md:max-w-xl lg:max-w-3xl">
-                            <span id="motivational-quote-text" class="italic transition-all duration-300 opacity-100 dark:text-gray-300 text-xs sm:text-sm">
-                                Loading inspiration...
-                            </span>
+                        <div class="flex items-center gap-2 max-w-full md:max-w-xl lg:max-w-3xl" style="perspective: 1000px;">
+                            <div id="motivational-quote-container" class="transform-gpu" style="transform-style: preserve-3d; transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.4s ease; opacity: 1; transform: rotateX(0deg) translateZ(0px);">
+                                <span id="motivational-quote-text" class="italic dark:text-gray-300 text-xs sm:text-sm block">
+                                    Loading inspiration...
+                                </span>
+                            </div>
                             <button onclick="refreshQuote()" title="New Quote" class="text-gray-400 hover:text-cyan-400 transition-colors focus:outline-none flex items-center justify-center p-1.5 rounded-lg hover:bg-white/5 active:scale-95 shrink-0 duration-200">
                                 <i id="quote-refresh-icon" class="ph-bold ph-arrow-counter-clockwise text-xs"></i>
                             </button>
@@ -691,7 +693,27 @@ const motivationalQuotes = [
     { text: "You are what you repeatedly do.", author: "Will Durant" }
 ];
 
-let currentQuoteIndex = Math.floor(Math.random() * motivationalQuotes.length);
+let quoteIndexPool = [];
+let currentQuoteIndex;
+
+function getNextQuoteIndex() {
+    if (quoteIndexPool.length === 0) {
+        // Re-populate and shuffle
+        for (let i = 0; i < motivationalQuotes.length; i++) {
+            quoteIndexPool.push(i);
+        }
+        // Fisher-Yates shuffle
+        for (let i = quoteIndexPool.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [quoteIndexPool[i], quoteIndexPool[j]] = [quoteIndexPool[j], quoteIndexPool[i]];
+        }
+        // Avoid repeating the last quote immediately
+        if (typeof currentQuoteIndex !== 'undefined' && quoteIndexPool[quoteIndexPool.length - 1] === currentQuoteIndex && quoteIndexPool.length > 1) {
+            [quoteIndexPool[quoteIndexPool.length - 1], quoteIndexPool[0]] = [quoteIndexPool[0], quoteIndexPool[quoteIndexPool.length - 1]];
+        }
+    }
+    return quoteIndexPool.pop();
+}
 
 function displayQuote() {
     const textElem = document.getElementById('motivational-quote-text');
@@ -701,47 +723,63 @@ function displayQuote() {
     }
 }
 
+// Global flag to prevent double clicks during transition
+let isQuoteTransitioning = false;
+
 function refreshQuote() {
-    const textElem = document.getElementById('motivational-quote-text');
+    if (isQuoteTransitioning) return;
+    
+    const container = document.getElementById('motivational-quote-container');
     const iconElem = document.getElementById('quote-refresh-icon');
     
-    if (textElem) {
-        // Fade out transition
-        textElem.classList.remove('opacity-100');
-        textElem.classList.add('opacity-0', 'translate-x-1');
+    if (container) {
+        isQuoteTransitioning = true;
         
-        // Rotate icon
+        // 1. Flip out backward (tilt up and fade)
+        container.style.transition = 'transform 0.35s cubic-bezier(0.4, 0, 1, 1), opacity 0.35s ease';
+        container.style.transform = 'rotateX(90deg) translateZ(10px)';
+        container.style.opacity = '0';
+        
+        // Rotate reload icon
         if (iconElem) {
             iconElem.style.transform = 'rotate(360deg)';
-            iconElem.style.transition = 'transform 0.6s ease';
+            iconElem.style.transition = 'transform 0.6s cubic-bezier(0.34, 1.56, 0.64, 1)';
         }
         
         setTimeout(() => {
-            // Get a different random quote index
-            let newIndex = Math.floor(Math.random() * motivationalQuotes.length);
-            while (newIndex === currentQuoteIndex && motivationalQuotes.length > 1) {
-                newIndex = Math.floor(Math.random() * motivationalQuotes.length);
-            }
-            currentQuoteIndex = newIndex;
-            
-            // Display and fade back in
+            // 2. Select next unique quote index from shuffled pool
+            currentQuoteIndex = getNextQuoteIndex();
             displayQuote();
-            textElem.classList.remove('opacity-0', 'translate-x-1');
-            textElem.classList.add('opacity-100');
+            
+            // 3. Move container to opposite tilt (bottom tilt) instantly
+            container.style.transition = 'none';
+            container.style.transform = 'rotateX(-90deg) translateZ(-10px)';
+            
+            // Trigger browser reflow
+            container.offsetHeight;
+            
+            // 4. Flip in forward from bottom with a springy easeOutBack bounce
+            container.style.transition = 'transform 0.45s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.45s ease';
+            container.style.transform = 'rotateX(0deg) translateZ(0px)';
+            container.style.opacity = '1';
             
             // Reset icon rotation state
             if (iconElem) {
                 setTimeout(() => {
                     iconElem.style.transition = 'none';
                     iconElem.style.transform = 'rotate(0deg)';
-                }, 600);
+                    isQuoteTransitioning = false;
+                }, 450);
+            } else {
+                isQuoteTransitioning = false;
             }
-        }, 300);
+        }, 350);
     }
 }
 
 // Set initial quote on page load and auto cycle
 document.addEventListener('DOMContentLoaded', () => {
+    currentQuoteIndex = getNextQuoteIndex();
     displayQuote();
     setInterval(refreshQuote, 20000);
 });
