@@ -18,21 +18,23 @@ include 'includes/sidebar.php';
 
 <!-- Main Content -->
 <main class="flex-1 flex flex-col h-[100dvh] overflow-hidden bg-gray-50 dark:bg-[#0B1120] transition-colors">
-    <header class="h-20 bg-white dark:bg-[#0B1120] border-b border-gray-200 dark:border-gray-800/50 flex items-center justify-between px-6 shrink-0 transition-colors">
-        <div class="flex items-center gap-4">
-            <button id="sidebar-toggle" title="Toggle Sidebar" class="lg:hidden text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-white">
+    <header class="h-20 bg-white dark:bg-[#0B1120] border-b border-gray-250 dark:border-gray-800/50 flex items-center justify-between px-4 sm:px-6 shrink-0 transition-colors">
+        <div class="flex items-center gap-2 sm:gap-4 min-w-0">
+            <button id="sidebar-toggle" title="Toggle Sidebar" class="lg:hidden text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-white shrink-0">
                 <i class="ph ph-list text-2xl"></i>
             </button>
-            <h1 class="text-xl font-semibold text-gray-800 dark:text-white">Team Workspace</h1>
+            <h1 class="text-base sm:text-xl font-bold text-gray-800 dark:text-white flex items-center gap-1.5 sm:gap-2 min-w-0">
+                <i class="ph-fill ph-users-three text-cyan-400 shrink-0"></i> <span class="truncate">Team Workspace</span>
+            </h1>
         </div>
         
-        <div class="flex items-center gap-4">
-            <button id="theme-toggle" title="Toggle Dark/Light Mode" class="w-10 h-10 rounded-lg flex items-center justify-center text-gray-500 hover:bg-gray-100 dark:text-gray-400 dark:hover:bg-gray-800 transition-colors">
+        <div class="flex items-center gap-2 sm:gap-3 shrink-0">
+            <button id="theme-toggle" title="Toggle Dark/Light Mode" class="w-10 h-10 rounded-xl flex items-center justify-center text-gray-555 hover:bg-gray-105 dark:text-gray-400 dark:hover:bg-gray-850 hover:text-gray-800 dark:hover:text-white border border-gray-200 dark:border-gray-800 transition-colors shrink-0">
                 <i class="ph ph-moon text-xl dark:hidden"></i>
                 <i class="ph ph-sun text-xl hidden dark:block"></i>
             </button>
-            <button id="invite-member-btn" class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-medium transition-colors flex items-center gap-2 shadow-sm">
-                <i class="ph ph-user-plus"></i> Invite Member
+            <button id="invite-member-btn" class="p-2.5 sm:px-4 sm:py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-xl font-medium transition-colors flex items-center gap-2 shadow-sm shrink-0" title="Invite Member">
+                <i class="ph ph-user-plus"></i> <span class="hidden sm:inline">Invite Member</span>
             </button>
         </div>
     </header>

@@ -18,26 +18,27 @@ include 'includes/sidebar.php';
 <main class="flex-1 flex flex-col h-[100dvh] overflow-hidden bg-gray-50 dark:bg-[#0B1120] text-slate-800 dark:text-gray-200 transition-colors relative">
     
     <!-- Header -->
-    <header class="h-20 bg-white dark:bg-[#0B1120] border-b border-gray-250 dark:border-gray-800/50 flex items-center justify-between px-6 shrink-0 z-10 transition-colors">
-        <div class="flex items-center gap-4">
-            <button id="sidebar-toggle" title="Toggle Sidebar" class="lg:hidden text-gray-500 hover:text-gray-855 dark:text-gray-400 dark:hover:text-white transition-colors">
+    <header class="h-20 bg-white dark:bg-[#0B1120] border-b border-gray-250 dark:border-gray-800/50 flex items-center justify-between px-4 sm:px-6 shrink-0 z-10 transition-colors">
+        <div class="flex items-center gap-2 sm:gap-4 min-w-0">
+            <button id="sidebar-toggle" title="Toggle Sidebar" class="lg:hidden text-gray-500 hover:text-gray-855 dark:text-gray-400 dark:hover:text-white transition-colors shrink-0">
                 <i class="ph ph-list text-2xl"></i>
             </button>
-            <div>
-                <h1 class="text-xl font-bold text-slate-800 dark:text-white flex items-center gap-2">
-                    <i class="ph-fill ph-ticket text-cyan-400"></i> Helpdesk Tickets
+            <div class="min-w-0">
+                <h1 class="text-base sm:text-lg md:text-xl font-bold text-slate-800 dark:text-white flex items-center gap-1.5 sm:gap-2 min-w-0">
+                    <i class="ph-fill ph-ticket text-cyan-400 text-lg sm:text-xl shrink-0"></i> 
+                    <span class="truncate">Helpdesk Tickets</span>
                 </h1>
                 <p class="text-xs text-gray-500 font-medium hidden sm:block">Manage customer issues, track SLA resolution deadlines, and collaborate.</p>
             </div>
         </div>
         
-        <div class="flex items-center gap-3">
-            <button id="theme-toggle" title="Toggle Dark/Light Mode" class="w-10 h-10 rounded-xl flex items-center justify-center text-gray-550 hover:bg-gray-105 dark:text-gray-400 dark:hover:bg-gray-850 hover:text-gray-800 dark:hover:text-white border border-gray-200 dark:border-gray-800 transition-colors">
+        <div class="flex items-center gap-2 sm:gap-3 shrink-0">
+            <button id="theme-toggle" title="Toggle Dark/Light Mode" class="w-10 h-10 rounded-xl flex items-center justify-center text-gray-555 hover:bg-gray-105 dark:text-gray-400 dark:hover:bg-gray-850 hover:text-gray-800 dark:hover:text-white border border-gray-200 dark:border-gray-800 transition-colors shrink-0">
                 <i class="ph ph-moon text-xl dark:hidden"></i>
                 <i class="ph ph-sun text-xl hidden dark:block"></i>
             </button>
-            <button onclick="openCreateModal()" class="btn-primary px-4 py-2 text-sm rounded-xl font-semibold transition-all flex items-center gap-2 shadow-lg bg-gradient-to-r from-blue-600 to-cyan-500 hover:from-blue-500 hover:to-cyan-400">
-                <i class="ph-bold ph-plus-circle text-lg"></i> Create Ticket
+            <button onclick="openCreateModal()" class="btn-primary p-2.5 sm:px-4 sm:py-2 text-sm rounded-xl font-semibold transition-all flex items-center gap-2 shadow-lg bg-gradient-to-r from-blue-600 to-cyan-500 hover:from-blue-500 hover:to-cyan-400 shrink-0" title="Create Ticket">
+                <i class="ph-bold ph-plus-circle text-lg"></i> <span class="hidden sm:inline">Create Ticket</span>
             </button>
         </div>
     </header>
@@ -108,25 +109,25 @@ include 'includes/sidebar.php';
                         </div>
                         
                         <!-- Quick View Filter Buttons (Desktop & Tablet) -->
-                        <div class="flex items-center gap-1.5 bg-gray-100 dark:bg-gray-950 p-1 rounded-xl border border-gray-200 dark:border-gray-800">
-                            <button onclick="changeView('all')" id="tab-all" class="px-3 py-1.5 text-xs font-semibold rounded-lg transition-all text-gray-500 hover:text-slate-800 dark:text-gray-400 dark:hover:text-white">All</button>
-                            <button onclick="changeView('open')" id="tab-open" class="px-3 py-1.5 text-xs font-semibold rounded-lg transition-all text-gray-500 hover:text-slate-800 dark:text-gray-400 dark:hover:text-white">Open</button>
-                            <button onclick="changeView('assigned')" id="tab-assigned" class="px-3 py-1.5 text-xs font-semibold rounded-lg transition-all text-gray-500 hover:text-slate-800 dark:text-gray-400 dark:hover:text-white">Assigned</button>
-                            <button onclick="changeView('breached')" id="tab-breached" class="px-3 py-1.5 text-xs font-semibold rounded-lg transition-all text-gray-500 hover:text-slate-800 dark:text-gray-400 dark:hover:text-white">Breached</button>
-                            <button onclick="changeView('closed')" id="tab-closed" class="px-3 py-1.5 text-xs font-semibold rounded-lg transition-all text-gray-500 hover:text-slate-800 dark:text-gray-400 dark:hover:text-white">Closed</button>
+                        <div class="flex items-center gap-1.5 bg-gray-100 dark:bg-gray-950 p-1 rounded-xl border border-gray-200 dark:border-gray-800 overflow-x-auto max-w-full [scrollbar-width:none] [&::-webkit-scrollbar]:hidden shrink-0">
+                            <button onclick="changeView('all')" id="tab-all" class="px-3 py-1.5 text-xs font-semibold rounded-lg transition-all text-gray-500 hover:text-slate-800 dark:text-gray-400 dark:hover:text-white shrink-0">All</button>
+                            <button onclick="changeView('open')" id="tab-open" class="px-3 py-1.5 text-xs font-semibold rounded-lg transition-all text-gray-500 hover:text-slate-800 dark:text-gray-400 dark:hover:text-white shrink-0">Open</button>
+                            <button onclick="changeView('assigned')" id="tab-assigned" class="px-3 py-1.5 text-xs font-semibold rounded-lg transition-all text-gray-500 hover:text-slate-800 dark:text-gray-400 dark:hover:text-white shrink-0">Assigned</button>
+                            <button onclick="changeView('breached')" id="tab-breached" class="px-3 py-1.5 text-xs font-semibold rounded-lg transition-all text-gray-500 hover:text-slate-800 dark:text-gray-400 dark:hover:text-white shrink-0">Breached</button>
+                            <button onclick="changeView('closed')" id="tab-closed" class="px-3 py-1.5 text-xs font-semibold rounded-lg transition-all text-gray-500 hover:text-slate-800 dark:text-gray-400 dark:hover:text-white shrink-0">Closed</button>
                         </div>
                     </div>
 
                     <!-- Right: Sorting & Display controls -->
-                    <div class="flex items-center gap-3 justify-end shrink-0">
-                        <select id="ticket-sort-by" onchange="loadTickets()" class="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 text-xs rounded-xl py-2 px-3 text-gray-700 dark:text-gray-400 focus:outline-none focus:border-cyan-500 transition-colors">
+                    <div class="flex items-center gap-3 w-full md:w-auto md:justify-end shrink-0">
+                        <select id="ticket-sort-by" onchange="loadTickets()" class="flex-1 md:flex-initial bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 text-xs rounded-xl py-2 px-3 text-gray-700 dark:text-gray-400 focus:outline-none focus:border-cyan-500 transition-colors">
                             <option value="created_at">Sort By: Date Created</option>
                             <option value="due_date">Sort By: SLA Resolution</option>
                             <option value="priority">Sort By: Priority</option>
                             <option value="status">Sort By: Status</option>
                             <option value="ticket_number">Sort By: ID</option>
                         </select>
-                        <select id="ticket-sort-order" onchange="loadTickets()" class="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 text-xs rounded-xl py-2 px-3 text-gray-700 dark:text-gray-400 focus:outline-none focus:border-cyan-500 transition-colors">
+                        <select id="ticket-sort-order" onchange="loadTickets()" class="flex-1 md:flex-initial bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 text-xs rounded-xl py-2 px-3 text-gray-700 dark:text-gray-400 focus:outline-none focus:border-cyan-500 transition-colors">
                             <option value="DESC">Descending</option>
                             <option value="ASC">Ascending</option>
                         </select>
@@ -140,17 +141,17 @@ include 'includes/sidebar.php';
                         <table class="w-full text-left border-collapse" id="tickets-table">
                             <thead>
                                 <tr class="border-b border-gray-200 dark:border-gray-800/80 bg-gray-100/50 dark:bg-gray-950/30 text-gray-550 dark:text-gray-400 text-xs font-bold uppercase tracking-wider">
-                                    <th class="py-4 px-4 w-10">
+                                    <th class="py-4 px-4 w-10 whitespace-nowrap">
                                         <input type="checkbox" id="select-all-tickets" onchange="toggleSelectAll()" class="w-4 h-4 accent-cyan-500 rounded border-gray-350 dark:border-gray-700 bg-white dark:bg-gray-900 focus:ring-cyan-500/20">
                                     </th>
-                                    <th class="py-4 px-4 w-24">Ticket ID</th>
-                                    <th class="py-4 px-6">Ticket Title</th>
-                                    <th class="py-4 px-6">Requested By</th>
-                                    <th class="py-4 px-6">Assigned To</th>
-                                    <th class="py-4 px-6 w-32">Priority</th>
-                                    <th class="py-4 px-6 w-36">Status</th>
-                                    <th class="py-4 px-6 w-40 text-right">SLA Resolution</th>
-                                    <th class="py-4 px-6 w-20 text-center">Action</th>
+                                    <th class="py-4 px-4 w-24 whitespace-nowrap">Ticket ID</th>
+                                    <th class="py-4 px-6 whitespace-nowrap">Ticket Title</th>
+                                    <th class="py-4 px-6 whitespace-nowrap">Requested By</th>
+                                    <th class="py-4 px-6 whitespace-nowrap">Assigned To</th>
+                                    <th class="py-4 px-6 w-32 whitespace-nowrap">Priority</th>
+                                    <th class="py-4 px-6 w-36 whitespace-nowrap">Status</th>
+                                    <th class="py-4 px-6 w-40 text-right whitespace-nowrap">SLA Resolution</th>
+                                    <th class="py-4 px-6 w-20 text-center whitespace-nowrap">Action</th>
                                 </tr>
                             </thead>
                             <tbody class="divide-y divide-gray-200 dark:divide-gray-800/40 text-sm" id="tickets-list-container">

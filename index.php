@@ -135,17 +135,17 @@ include 'includes/sidebar.php';
 <!-- Main Content -->
 <main class="flex-1 flex flex-col h-[100dvh] overflow-hidden bg-gray-50 dark:bg-[#0B1120] text-slate-800 dark:text-gray-200 transition-colors">
     <!-- Top Header -->
-    <header class="h-20 bg-white dark:bg-[#0B1120] border-b border-gray-250 dark:border-gray-800/50 flex items-center justify-between px-6 shrink-0 z-10 transition-colors">
-        <div class="flex items-center gap-4">
-            <button id="sidebar-toggle" title="Toggle Sidebar" class="lg:hidden text-gray-500 hover:text-gray-800 dark:text-gray-400 dark:hover:text-white transition-colors">
+    <header class="h-20 bg-white dark:bg-[#0B1120] border-b border-gray-250 dark:border-gray-800/50 flex items-center justify-between px-4 sm:px-6 shrink-0 z-10 transition-colors">
+        <div class="flex items-center gap-2 sm:gap-4 min-w-0">
+            <button id="sidebar-toggle" title="Toggle Sidebar" class="lg:hidden text-gray-500 hover:text-gray-800 dark:text-gray-400 dark:hover:text-white transition-colors shrink-0">
                 <i class="ph ph-list text-2xl"></i>
             </button>
-            <h1 class="text-xl font-bold bg-gradient-to-r from-blue-400 to-cyan-400 bg-clip-text text-transparent flex items-center gap-2">
-                <i class="ph-fill ph-squares-four text-cyan-400"></i> Dashboard
+            <h1 class="text-base sm:text-xl font-bold bg-gradient-to-r from-blue-400 to-cyan-400 bg-clip-text text-transparent flex items-center gap-1.5 sm:gap-2 min-w-0">
+                <i class="ph-fill ph-squares-four text-cyan-400 shrink-0"></i> <span class="truncate">Dashboard</span>
             </h1>
         </div>
 
-        <div class="flex items-center gap-6">
+        <div class="flex items-center gap-3 sm:gap-6 shrink-0">
             <!-- Global Search -->
             <div class="hidden md:flex relative group">
                 <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
@@ -157,19 +157,19 @@ include 'includes/sidebar.php';
                 </div>
             </div>
 
-            <div class="flex items-center gap-4">
+            <div class="flex items-center gap-2 sm:gap-3 shrink-0">
                 <!-- Notifications -->
-                <button title="Notifications" class="w-10 h-10 rounded-xl flex items-center justify-center text-gray-500 hover:bg-gray-100 dark:text-gray-400 dark:hover:bg-gray-800 hover:text-gray-700 dark:hover:text-white transition-all relative hover-lift">
+                <button title="Notifications" class="w-10 h-10 rounded-xl flex items-center justify-center text-gray-500 hover:bg-gray-105 dark:text-gray-400 dark:hover:bg-gray-800 hover:text-gray-700 dark:hover:text-white transition-all relative hover-lift shrink-0">
                     <i class="ph ph-bell text-xl"></i>
                     <span class="absolute top-2 right-2 w-2 h-2 bg-pink-500 rounded-full shadow-[0_0_8px_rgba(236,72,153,0.8)]"></span>
                 </button>
                 <!-- Quick Add -->
-                <a href="tasks.php" class="px-4 py-2 bg-gradient-to-r from-blue-600 to-cyan-500 hover:from-blue-500 hover:to-cyan-400 text-white rounded-xl font-medium transition-all flex items-center gap-2 neon-glow-cyan hover-lift">
+                <a href="tasks.php" class="p-2.5 sm:px-4 sm:py-2 bg-gradient-to-r from-blue-600 to-cyan-500 hover:from-blue-500 hover:to-cyan-400 text-white rounded-xl font-medium transition-all flex items-center gap-2 neon-glow-cyan hover-lift shrink-0" title="Quick Add">
                     <i class="ph-bold ph-plus text-sm"></i> <span class="hidden sm:inline">Quick Add</span>
                 </a>
                 <!-- User Profile -->
-                <div class="w-10 h-10 rounded-full bg-gradient-to-tr from-purple-500 to-blue-500 p-0.5 cursor-pointer hover-lift">
-                    <img src="https://ui-avatars.com/api/?name=<?php echo urlencode($_SESSION['username']); ?>&background=1E293B&color=fff" class="w-full h-full rounded-full border-2 border-white dark:border-[#111827]">
+                <div class="w-10 h-10 rounded-full bg-gradient-to-tr from-purple-500 to-blue-500 p-0.5 cursor-pointer hover-lift shrink-0">
+                    <img src="https://ui-avatars.com/api/?name=<?php echo urlencode($_SESSION['username']); ?>&background=1E293B&color=fff" class="w-full h-full rounded-full border-2 border-white dark:border-[#111827] object-cover">
                 </div>
             </div>
         </div>

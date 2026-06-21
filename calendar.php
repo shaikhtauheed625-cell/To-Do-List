@@ -31,26 +31,26 @@ include 'includes/sidebar.php';
 
 <!-- Main Content -->
 <main class="flex-1 flex flex-col h-[100dvh] overflow-hidden bg-gray-50 dark:bg-[#0B1120] transition-colors">
-    <header class="h-20 bg-white dark:bg-[#0B1120] border-b border-gray-200 dark:border-gray-800/50 flex items-center justify-between px-6 shrink-0 transition-colors z-10">
-        <div class="flex items-center gap-4">
-            <button id="sidebar-toggle" title="Toggle Sidebar" class="lg:hidden text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-white">
+    <header class="h-20 bg-white dark:bg-[#0B1120] border-b border-gray-255 dark:border-gray-800/50 flex items-center justify-between px-4 sm:px-6 shrink-0 transition-colors z-10">
+        <div class="flex items-center gap-2 sm:gap-4 min-w-0">
+            <button id="sidebar-toggle" title="Toggle Sidebar" class="lg:hidden text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-white shrink-0">
                 <i class="ph ph-list text-2xl"></i>
             </button>
-            <h1 class="text-xl font-bold text-gray-800 dark:text-white tracking-tight flex items-center gap-2">
-                <i class="ph ph-calendar-blank text-blue-600 dark:text-blue-500"></i> Workspace Calendar
+            <h1 class="text-base sm:text-xl font-bold text-gray-800 dark:text-white tracking-tight flex items-center gap-1.5 sm:gap-2 min-w-0">
+                <i class="ph ph-calendar-blank text-blue-600 dark:text-blue-500 shrink-0"></i> <span class="truncate">Workspace Calendar</span>
             </h1>
         </div>
         
-        <div class="flex items-center gap-4">
-            <button onclick="toggleFilterSidebar()" class="lg:hidden w-10 h-10 rounded-lg flex items-center justify-center text-gray-500 hover:bg-gray-100 dark:text-gray-400 dark:hover:bg-gray-800 border border-gray-200 dark:border-gray-800 transition-colors" title="Toggle Filters">
+        <div class="flex items-center gap-2 sm:gap-3 shrink-0">
+            <button onclick="toggleFilterSidebar()" class="lg:hidden w-10 h-10 rounded-xl flex items-center justify-center text-gray-555 hover:bg-gray-105 dark:text-gray-400 dark:hover:bg-gray-850 hover:text-gray-800 dark:hover:text-white border border-gray-200 dark:border-gray-800 transition-colors shrink-0" title="Toggle Filters">
                 <i class="ph ph-sliders text-xl"></i>
             </button>
-            <button id="theme-toggle" title="Toggle Dark/Light Mode" class="w-10 h-10 rounded-lg flex items-center justify-center text-gray-500 hover:bg-gray-100 dark:text-gray-400 dark:hover:bg-gray-800 border border-gray-200 dark:border-gray-800 transition-colors">
+            <button id="theme-toggle" title="Toggle Dark/Light Mode" class="w-10 h-10 rounded-xl flex items-center justify-center text-gray-555 hover:bg-gray-105 dark:text-gray-400 dark:hover:bg-gray-850 hover:text-gray-800 dark:hover:text-white border border-gray-200 dark:border-gray-800 transition-colors shrink-0">
                 <i class="ph ph-moon text-xl dark:hidden"></i>
                 <i class="ph ph-sun text-xl hidden dark:block"></i>
             </button>
-            <button onclick="openTaskModal()" class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-bold transition-all flex items-center gap-2 shadow-md hover:shadow-lg text-sm shrink-0">
-                <i class="ph ph-plus"></i> New Event
+            <button onclick="openTaskModal()" class="p-2.5 sm:px-4 sm:py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-xl font-bold transition-all flex items-center gap-2 shadow-md hover:shadow-lg text-sm shrink-0" title="New Event">
+                <i class="ph ph-plus"></i> <span class="hidden sm:inline">New Event</span>
             </button>
         </div>
     </header>

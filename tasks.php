@@ -51,23 +51,25 @@ include 'includes/sidebar.php';
 <!-- Main Content -->
 <main class="flex-1 flex flex-col h-[100dvh] overflow-hidden bg-gray-50 dark:bg-[#0B1120] transition-colors relative">
     <!-- Top Header -->
-    <header class="h-20 bg-white dark:bg-[#0B1120] border-b border-gray-200 dark:border-gray-800/50 flex items-center justify-between px-6 shrink-0 transition-colors">
-        <div class="flex items-center gap-4">
-            <button id="sidebar-toggle" class="lg:hidden text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-white">
+    <header class="h-20 bg-white dark:bg-[#0B1120] border-b border-gray-250 dark:border-gray-800/50 flex items-center justify-between px-4 sm:px-6 shrink-0 transition-colors">
+        <div class="flex items-center gap-2 sm:gap-4 min-w-0">
+            <button id="sidebar-toggle" class="lg:hidden text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-white shrink-0">
                 <i class="ph ph-list text-2xl"></i>
             </button>
-            <a href="index.php" class="hover:text-blue-500 dark:hover:text-cyan-400 transition-colors" title="Go to Dashboard">
-                <h1 class="text-xl font-semibold text-gray-800 dark:text-white">My Tasks</h1>
+            <a href="index.php" class="hover:text-blue-500 dark:hover:text-cyan-400 transition-colors min-w-0" title="Go to Dashboard">
+                <h1 class="text-base sm:text-xl font-bold text-gray-800 dark:text-white flex items-center gap-1.5 sm:gap-2 min-w-0">
+                    <i class="ph-fill ph-kanban text-cyan-400 shrink-0"></i> <span class="truncate">My Tasks</span>
+                </h1>
             </a>
         </div>
 
-        <div class="flex items-center gap-4">
-            <button id="theme-toggle" class="w-10 h-10 rounded-lg flex items-center justify-center text-gray-500 hover:bg-gray-100 dark:text-gray-400 dark:hover:bg-gray-800 transition-colors">
+        <div class="flex items-center gap-2 sm:gap-3 shrink-0">
+            <button id="theme-toggle" title="Toggle Dark/Light Mode" class="w-10 h-10 rounded-xl flex items-center justify-center text-gray-555 hover:bg-gray-105 dark:text-gray-400 dark:hover:bg-gray-850 hover:text-gray-800 dark:hover:text-white border border-gray-200 dark:border-gray-800 transition-colors shrink-0">
                 <i class="ph ph-moon text-xl dark:hidden"></i>
                 <i class="ph ph-sun text-xl hidden dark:block"></i>
             </button>
-            <button onclick="openTaskModal()" class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-medium transition-colors flex items-center gap-2 shadow-sm">
-                <i class="ph ph-plus"></i> Add Task
+            <button onclick="openTaskModal()" class="p-2.5 sm:px-4 sm:py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-xl font-medium transition-colors flex items-center gap-2 shadow-sm shrink-0" title="Add Task">
+                <i class="ph ph-plus"></i> <span class="hidden sm:inline">Add Task</span>
             </button>
         </div>
     </header>
@@ -96,14 +98,14 @@ include 'includes/sidebar.php';
                     <table class="w-full text-left border-collapse">
                         <thead>
                             <tr class="bg-gray-50 dark:bg-gray-800/50 border-b border-gray-200 dark:border-gray-800 text-xs uppercase tracking-wider text-gray-500 dark:text-gray-400">
-                                <th class="p-4 w-10">
+                                <th class="p-4 w-10 whitespace-nowrap">
                                     <input type="checkbox" id="select-all-tasks" onchange="toggleSelectAllTasks(this.checked)" class="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500 cursor-pointer">
                                 </th>
-                                <th class="p-4 font-medium">Task Name</th>
-                                <th class="p-4 font-medium">Status</th>
-                                <th class="p-4 font-medium">Priority</th>
-                                <th class="p-4 font-medium">Due Date</th>
-                                <th class="p-4 font-medium text-right">Actions</th>
+                                <th class="p-4 font-medium whitespace-nowrap">Task Name</th>
+                                <th class="p-4 font-medium whitespace-nowrap">Status</th>
+                                <th class="p-4 font-medium whitespace-nowrap">Priority</th>
+                                <th class="p-4 font-medium whitespace-nowrap">Due Date</th>
+                                <th class="p-4 font-medium text-right whitespace-nowrap">Actions</th>
                             </tr>
                         </thead>
                         <tbody class="divide-y divide-gray-200 dark:divide-gray-800" id="taskList">
