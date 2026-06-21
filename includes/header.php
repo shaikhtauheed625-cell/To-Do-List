@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title><?php echo isset($page_title) ? $page_title . ' - task.n1space.com' : 'task.n1space.com'; ?></title>
+    <link rel="icon" type="image/png" href="<?php echo SITE_URL; ?>/assets/images/favicon.png?v=1">
     
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
