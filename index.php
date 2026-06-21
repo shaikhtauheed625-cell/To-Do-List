@@ -182,10 +182,30 @@ include 'includes/sidebar.php';
             <!-- Welcome Section -->
             <div class="flex flex-col md:flex-row justify-between items-start md:items-end gap-4 animate-fade-in">
                 <div>
-                    <h2 class="text-3xl font-bold text-slate-800 dark:text-white tracking-tight">Good Morning, <?php echo htmlspecialchars($_SESSION['username']); ?></h2>
-                    <p class="text-gray-400 mt-2 flex items-center gap-2">
-                        <i class="ph-fill ph-sparkle text-cyan-400"></i> AI predicts a highly productive day for you.
-                    </p>
+                    <?php
+                    $hour = date('H');
+                    $greeting = "Good Morning";
+                    if ($hour >= 12 && $hour < 18) {
+                        $greeting = "Good Afternoon";
+                    } elseif ($hour >= 18 || $hour < 5) {
+                        $greeting = "Good Evening";
+                    }
+                    ?>
+                    <h2 class="text-3xl font-bold text-slate-800 dark:text-white tracking-tight"><?php echo $greeting; ?>, <?php echo htmlspecialchars($_SESSION['username']); ?></h2>
+                    
+                    <div class="mt-3 text-sm text-gray-500 dark:text-gray-400 flex items-center gap-2 flex-wrap min-h-[32px]">
+                        <span class="inline-flex items-center gap-1.5 px-3 py-1 bg-cyan-500/10 text-cyan-400 rounded-full text-[10px] font-bold tracking-widest uppercase border border-cyan-500/20 animate-pulse shrink-0">
+                            <i class="ph-bold ph-lightning"></i> Motivation
+                        </span>
+                        <div class="flex items-center gap-2 max-w-full md:max-w-xl lg:max-w-3xl">
+                            <span id="motivational-quote-text" class="italic transition-all duration-300 opacity-100 dark:text-gray-300 text-xs sm:text-sm">
+                                Loading inspiration...
+                            </span>
+                            <button onclick="refreshQuote()" title="New Quote" class="text-gray-400 hover:text-cyan-400 transition-colors focus:outline-none flex items-center justify-center p-1.5 rounded-lg hover:bg-white/5 active:scale-95 shrink-0 duration-200">
+                                <i id="quote-refresh-icon" class="ph-bold ph-arrow-counter-clockwise text-xs"></i>
+                            </button>
+                        </div>
+                    </div>
                 </div>
                 <div class="text-right">
                     <p class="text-sm text-gray-500 font-medium uppercase tracking-wider"><?php echo date('l, M jS'); ?></p>
@@ -650,6 +670,80 @@ document.addEventListener('click', (event) => {
             menu.classList.add('hidden');
         }
     }
+});
+
+// Motivational Quote Widget Logic
+const motivationalQuotes = [
+    { text: "The secret of getting ahead is getting started.", author: "Mark Twain" },
+    { text: "Quality is not an act, it is a habit.", author: "Aristotle" },
+    { text: "Focus on being productive instead of busy.", author: "Tim Ferriss" },
+    { text: "Your mind is for having ideas, not holding them.", author: "David Allen" },
+    { text: "It always seems impossible until it's done.", author: "Nelson Mandela" },
+    { text: "Big journeys begin with small, consistent steps.", author: "Unknown" },
+    { text: "Productivity is never an accident. It is the result of commitment to excellence.", author: "Paul J. Meyer" },
+    { text: "Make each day your masterpiece.", author: "John Wooden" },
+    { text: "Action is the foundational key to all success.", author: "Pablo Picasso" },
+    { text: "The best way to predict the future is to create it.", author: "Peter Drucker" },
+    { text: "Don't wish it were easier. Wish you were better.", author: "Jim Rohn" },
+    { text: "Done is better than perfect.", author: "Sheryl Sandberg" },
+    { text: "Yesterday you said tomorrow. Just do it.", author: "Nike" },
+    { text: "Small progress is still progress.", author: "Unknown" },
+    { text: "You are what you repeatedly do.", author: "Will Durant" }
+];
+
+let currentQuoteIndex = Math.floor(Math.random() * motivationalQuotes.length);
+
+function displayQuote() {
+    const textElem = document.getElementById('motivational-quote-text');
+    if (textElem) {
+        const quote = motivationalQuotes[currentQuoteIndex];
+        textElem.innerHTML = `"${quote.text}" <span class="text-xs text-gray-500 dark:text-gray-550 not-italic font-semibold">— ${quote.author}</span>`;
+    }
+}
+
+function refreshQuote() {
+    const textElem = document.getElementById('motivational-quote-text');
+    const iconElem = document.getElementById('quote-refresh-icon');
+    
+    if (textElem) {
+        // Fade out transition
+        textElem.classList.remove('opacity-100');
+        textElem.classList.add('opacity-0', 'translate-x-1');
+        
+        // Rotate icon
+        if (iconElem) {
+            iconElem.style.transform = 'rotate(360deg)';
+            iconElem.style.transition = 'transform 0.6s ease';
+        }
+        
+        setTimeout(() => {
+            // Get a different random quote index
+            let newIndex = Math.floor(Math.random() * motivationalQuotes.length);
+            while (newIndex === currentQuoteIndex && motivationalQuotes.length > 1) {
+                newIndex = Math.floor(Math.random() * motivationalQuotes.length);
+            }
+            currentQuoteIndex = newIndex;
+            
+            // Display and fade back in
+            displayQuote();
+            textElem.classList.remove('opacity-0', 'translate-x-1');
+            textElem.classList.add('opacity-100');
+            
+            // Reset icon rotation state
+            if (iconElem) {
+                setTimeout(() => {
+                    iconElem.style.transition = 'none';
+                    iconElem.style.transform = 'rotate(0deg)';
+                }, 600);
+            }
+        }, 300);
+    }
+}
+
+// Set initial quote on page load and auto cycle
+document.addEventListener('DOMContentLoaded', () => {
+    displayQuote();
+    setInterval(refreshQuote, 20000);
 });
 </script>
 EOT;
