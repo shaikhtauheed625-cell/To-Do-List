@@ -140,7 +140,9 @@ include 'includes/sidebar.php';
             <button id="sidebar-toggle" title="Toggle Sidebar" class="lg:hidden text-gray-500 hover:text-gray-800 dark:text-gray-400 dark:hover:text-white transition-colors">
                 <i class="ph ph-list text-2xl"></i>
             </button>
-            <h1 class="text-xl font-semibold bg-gradient-to-r from-blue-400 to-cyan-400 bg-clip-text text-transparent">Command Center</h1>
+            <h1 class="text-xl font-bold bg-gradient-to-r from-blue-400 to-cyan-400 bg-clip-text text-transparent flex items-center gap-2">
+                <i class="ph-fill ph-squares-four text-cyan-400"></i> Dashboard
+            </h1>
         </div>
 
         <div class="flex items-center gap-6">
