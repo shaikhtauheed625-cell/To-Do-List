@@ -19,12 +19,21 @@ header('Content-Type: text/html; charset=utf-8');
 <body>
     <h1>cPanel Git Deployment Debugger</h1>
     <div class="box">
+        <a href="?action=pull" class="btn" style="background:#2a9d8f;">Git Pull (Fetch & Merge)</a>
         <a href="?action=reset" class="btn">Force Git Reset & Clean</a>
         <a href="?action=status" class="btn" style="background:#457b9d;">Refresh Status</a>
     </div>
 
     <?php
     $action = $_GET['action'] ?? 'status';
+
+    if ($action === 'pull') {
+        echo "<div class='box'>";
+        echo "<h2>Running Git Pull...</h2>";
+        $pull = shell_exec('/usr/local/cpanel/3rdparty/bin/git pull origin main 2>&1');
+        echo "<h3>Pull Output:</h3><pre>" . htmlspecialchars($pull) . "</pre>";
+        echo "</div>";
+    }
 
     if ($action === 'reset') {
         echo "<div class='box'>";

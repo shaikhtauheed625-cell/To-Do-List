@@ -2,11 +2,14 @@
 session_start();
 
 // Database Configuration
-$prodDbConfig = dirname(__DIR__, 2) . '/db_config.php';
+$prodDbConfig1 = dirname(__DIR__, 2) . '/db_config.php';
+$prodDbConfig2 = dirname(__DIR__, 3) . '/db_config.php';
 $localDbConfig = __DIR__ . '/db_config.php';
 
-if (file_exists($prodDbConfig)) {
-    require_once $prodDbConfig;
+if (file_exists($prodDbConfig1)) {
+    require_once $prodDbConfig1;
+} elseif (file_exists($prodDbConfig2)) {
+    require_once $prodDbConfig2;
 } elseif (file_exists($localDbConfig)) {
     require_once $localDbConfig;
 } else {
