@@ -314,9 +314,15 @@ include 'includes/sidebar.php';
                                         <span class="w-2 h-2 rounded-full <?php echo $task['priority'] === 'urgent' ? 'bg-rose-500' : 'bg-blue-500'; ?> shadow-[0_0_5px_currentColor]"></span>
                                     </div>
                                     <div class="flex items-center justify-between mt-2">
-                                        <div class="flex items-center gap-3 text-[11px] font-medium text-gray-500">
+                                        <div class="flex items-center gap-3 text-[11px] font-medium text-gray-500 flex-wrap">
                                             <span class="flex items-center gap-1"><i class="ph-fill ph-clock"></i> <?php echo $task['due_date'] ? date('M d', strtotime($task['due_date'])) : 'Anytime'; ?></span>
                                             <span class="flex items-center gap-1"><i class="ph-fill ph-tag"></i> <?php echo ucfirst($task['priority'] ?? 'Medium'); ?></span>
+                                            <?php if (!empty($task['recurrence']) && $task['recurrence'] !== 'none'): ?>
+                                                <span class="flex items-center gap-1 text-purple-400 font-semibold" title="Recurring: <?php echo ucfirst($task['recurrence']); ?>">
+                                                    <i class="ph-bold ph-arrows-clockwise animate-spin-slow"></i>
+                                                    <?php echo ucfirst($task['recurrence']); ?>
+                                                </span>
+                                            <?php endif; ?>
                                         </div>
                                         
                                         <!-- Hover actions panel -->

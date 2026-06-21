@@ -140,6 +140,11 @@ include 'includes/sidebar.php';
                                                                 <i class="ph-bold ph-whatsapp-logo"></i> <?php echo htmlspecialchars($task['phone']); ?>
                                                             </span>
                                                         <?php endif; ?>
+                                                        <?php if (!empty($task['recurrence']) && $task['recurrence'] !== 'none'): ?>
+                                                            <span class="inline-flex items-center gap-1 text-[9px] bg-purple-500/10 text-purple-400 font-semibold px-2 py-0.5 rounded-full border border-purple-500/20 animate-pulse" title="Recurring Task">
+                                                                <i class="ph ph-arrows-clockwise"></i> <?php echo ucfirst($task['recurrence']); ?>
+                                                            </span>
+                                                        <?php endif; ?>
                                                     </div>
                                                     <?php if($task['description']): ?>
                                                         <p class="text-xs text-gray-500 truncate max-w-xs mt-0.5"><?php echo htmlspecialchars($task['description']); ?></p>
@@ -275,6 +280,16 @@ include 'includes/sidebar.php';
                         <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1.5">Due Date</label>
                         <input type="date" id="taskDueDate" class="w-full px-3 py-2 border border-gray-200 dark:border-gray-700 rounded-lg focus:ring-2 focus:ring-blue-500 bg-white dark:bg-gray-800 text-gray-900 dark:text-white">
                     </div>
+                </div>
+
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1.5">Repeat Task</label>
+                    <select id="taskRecurrence" class="w-full px-3 py-2 border border-gray-200 dark:border-gray-700 rounded-lg focus:ring-2 focus:ring-blue-500 bg-white dark:bg-gray-800 text-gray-900 dark:text-white">
+                        <option value="none" selected>No Repeat</option>
+                        <option value="daily">Daily</option>
+                        <option value="weekly">Weekly</option>
+                        <option value="monthly">Monthly</option>
+                    </select>
                 </div>
 
                 <div>
@@ -497,6 +512,7 @@ $custom_js = <<<'EOT'
         document.getElementById('taskDueDate').value = task.due_date ? task.due_date.substring(0, 10) : '';
         document.getElementById('taskAssignee').value = task.assigned_to || '';
         document.getElementById('taskPhone').value = task.phone || '';
+        document.getElementById('taskRecurrence').value = task.recurrence || 'none';
         
         // Populate reminder field
         if (task.reminder_time) {
@@ -523,6 +539,7 @@ $custom_js = <<<'EOT'
         const dueDate = document.getElementById('taskDueDate').value;
         const assignee = document.getElementById('taskAssignee').value;
         const phone = document.getElementById('taskPhone').value;
+        const recurrence = document.getElementById('taskRecurrence').value;
         const reminderTime = document.getElementById('taskReminderTime').value;
 
         const payload = {
@@ -532,6 +549,7 @@ $custom_js = <<<'EOT'
             due_date: dueDate,
             assigned_to: assignee,
             phone: phone,
+            recurrence: recurrence,
             reminder_time: reminderTime || null
         };
 
@@ -564,7 +582,12 @@ $custom_js = <<<'EOT'
             pTag.classList.remove('line-through', 'text-gray-400', 'dark:text-gray-500');
         }
 
-        await fetchAPI('api/tasks.php', 'PUT', { id: id, status: status });
+        const result = await fetchAPI('api/tasks.php', 'PUT', { id: id, status: status });
+        if (result && result.recurred) {
+            setTimeout(() => {
+                window.location.reload();
+            }, 600);
+        }
     }
 
     // Update Status API Call (Dropdown)
@@ -584,7 +607,12 @@ $custom_js = <<<'EOT'
             pTag.classList.remove('line-through', 'text-gray-400', 'dark:text-gray-500');
         }
 
-        await fetchAPI('api/tasks.php', 'PUT', { id: id, status: status });
+        const result = await fetchAPI('api/tasks.php', 'PUT', { id: id, status: status });
+        if (result && result.recurred) {
+            setTimeout(() => {
+                window.location.reload();
+            }, 600);
+        }
     }
 
     // Delete Task API Call

@@ -78,9 +78,10 @@ try {
             $assigned_to = !empty($data['assigned_to']) ? intval($data['assigned_to']) : null;
             $project_id = !empty($data['project_id']) ? intval($data['project_id']) : null;
             $phone = sanitize_input($data['phone'] ?? '');
+            $recurrence = sanitize_input($data['recurrence'] ?? 'none');
 
-            $stmt = $pdo->prepare("INSERT INTO tasks (title, description, priority, due_date, assigned_to, created_by, phone, project_id) VALUES (?, ?, ?, ?, ?, ?, ?, ?)");
-            $stmt->execute([$title, $description, $priority, $due_date, $assigned_to, $user_id, $phone, $project_id]);
+            $stmt = $pdo->prepare("INSERT INTO tasks (title, description, priority, due_date, assigned_to, created_by, phone, project_id, recurrence) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)");
+            $stmt->execute([$title, $description, $priority, $due_date, $assigned_to, $user_id, $phone, $project_id, $recurrence]);
             $taskId = $pdo->lastInsertId();
 
             // Insert reminder if specified
@@ -109,10 +110,10 @@ try {
             
             // Verify ownership
             if (isAdmin()) {
-                $check = $pdo->prepare("SELECT id, title FROM tasks WHERE id = ?");
+                $check = $pdo->prepare("SELECT id, title, recurrence, due_date FROM tasks WHERE id = ?");
                 $check->execute([$id]);
             } else {
-                $check = $pdo->prepare("SELECT id, title FROM tasks WHERE id = ? AND (created_by = ? OR assigned_to = ?)");
+                $check = $pdo->prepare("SELECT id, title, recurrence, due_date FROM tasks WHERE id = ? AND (created_by = ? OR assigned_to = ?)");
                 $check->execute([$id, $user_id, $user_id]);
             }
             $task = $check->fetch();
@@ -120,6 +121,53 @@ try {
                 echo json_encode(['success' => false, 'message' => 'Task not found or unauthorized']);
                 exit;
             }
+
+             // Recurrence shift logic if completed
+             $recurred = false;
+             $next_due_date = null;
+             if (isset($data['status']) && $data['status'] === 'completed' && !empty($task['recurrence']) && $task['recurrence'] !== 'none') {
+                 $recurrence = $task['recurrence'];
+                 $baseDate = !empty($task['due_date']) ? strtotime($task['due_date']) : time();
+                 
+                 $intervalMap = [
+                     'daily' => '1 day',
+                     'weekly' => '1 week',
+                     'monthly' => '1 month'
+                 ];
+
+                 if (isset($intervalMap[$recurrence])) {
+                     $interval = $intervalMap[$recurrence];
+                     $next_due_date_ts = $baseDate;
+                     
+                     // Skip-jump optimization for long overdue tasks
+                     if ($next_due_date_ts < time()) {
+                         $diffSeconds = time() - $next_due_date_ts;
+                         if ($recurrence === 'daily' && $diffSeconds > 86400 * 10) {
+                             $daysToSkip = floor($diffSeconds / 86400) - 5;
+                             $next_due_date_ts = strtotime('+' . $daysToSkip . ' days', $next_due_date_ts);
+                         } elseif ($recurrence === 'weekly' && $diffSeconds > 86400 * 7 * 5) {
+                             $weeksToSkip = floor($diffSeconds / (86400 * 7)) - 3;
+                             $next_due_date_ts = strtotime('+' . $weeksToSkip . ' weeks', $next_due_date_ts);
+                         } elseif ($recurrence === 'monthly' && $diffSeconds > 86400 * 30 * 5) {
+                             $monthsToSkip = floor($diffSeconds / (86400 * 30.44)) - 2;
+                             $next_due_date_ts = strtotime('+' . $monthsToSkip . ' months', $next_due_date_ts);
+                         }
+                     }
+
+                     // Add intervals until the due date is in the future
+                     $iterations = 0;
+                     while ($next_due_date_ts <= time() && $iterations < 100) {
+                         $next_due_date_ts = strtotime('+' . $interval, $next_due_date_ts);
+                         $iterations++;
+                     }
+
+                     $next_due_date = date('Y-m-d H:i:s', $next_due_date_ts);
+                     
+                     $data['status'] = 'todo';
+                     $data['due_date'] = $next_due_date;
+                     $recurred = true;
+                 }
+             }
 
             $fields = [];
             $params = [];
@@ -156,6 +204,10 @@ try {
                 $fields[] = "phone = ?";
                 $params[] = sanitize_input($data['phone']);
             }
+            if (isset($data['recurrence'])) {
+                $fields[] = "recurrence = ?";
+                $params[] = sanitize_input($data['recurrence']);
+            }
 
             if (!empty($fields)) {
                 $params[] = $id;
@@ -172,6 +224,9 @@ try {
                     } elseif ($data['status'] === 'todo') {
                         $action = 'Reset task to todo';
                     }
+                }
+                if ($recurred) {
+                    $action = 'Completed recurring task occurrence';
                 }
                 $logStmt = $pdo->prepare("INSERT INTO activity_logs (user_id, action, details) VALUES (?, ?, ?)");
                 $logStmt->execute([$user_id, $action, $task['title']]);
@@ -203,7 +258,12 @@ try {
                 }
             }
 
-            echo json_encode(['success' => true, 'message' => 'Task updated successfully']);
+            echo json_encode([
+                'success' => true,
+                'message' => 'Task updated successfully',
+                'recurred' => $recurred,
+                'next_due_date' => $next_due_date
+            ]);
             break;
 
 

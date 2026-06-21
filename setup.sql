@@ -73,6 +73,7 @@ CREATE TABLE IF NOT EXISTS `tasks` (
     `phone` VARCHAR(20) DEFAULT NULL,
     `is_archived` BOOLEAN DEFAULT FALSE,
     `is_starred` BOOLEAN DEFAULT FALSE,
+    `recurrence` ENUM('none', 'daily', 'weekly', 'monthly') DEFAULT 'none',
     `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     `updated_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     FOREIGN KEY (`project_id`) REFERENCES `projects`(`id`) ON DELETE SET NULL,

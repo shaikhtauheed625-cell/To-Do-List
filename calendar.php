@@ -218,6 +218,16 @@ include 'includes/sidebar.php';
                 </div>
 
                 <div>
+                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1.5">Repeat Task</label>
+                    <select id="taskRecurrence" class="w-full px-3 py-2 border border-gray-200 dark:border-gray-700 rounded-lg focus:ring-2 focus:ring-blue-500 bg-white dark:bg-gray-800 text-gray-900 dark:text-white text-sm">
+                        <option value="none" selected>No Repeat</option>
+                        <option value="daily">Daily</option>
+                        <option value="weekly">Weekly</option>
+                        <option value="monthly">Monthly</option>
+                    </select>
+                </div>
+
+                <div>
                     <div class="flex items-center justify-between mb-1.5">
                         <label class="block text-sm font-medium text-gray-700 dark:text-gray-300">Contact Phone (for WhatsApp)</label>
                         <button type="button" onclick="openContactSelector('taskPhone')" class="text-xs text-blue-600 dark:text-blue-400 hover:underline flex items-center gap-1 font-bold bg-transparent border-none outline-none">
@@ -298,6 +308,16 @@ include 'includes/sidebar.php';
                 </div>
 
                 <div>
+                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1.5">Repeat Task</label>
+                    <select id="edit-task-recurrence" class="w-full px-3 py-2 border border-gray-200 dark:border-gray-700 rounded-lg focus:ring-2 focus:ring-blue-500 bg-white dark:bg-gray-800 text-gray-900 dark:text-white text-sm">
+                        <option value="none">No Repeat</option>
+                        <option value="daily">Daily</option>
+                        <option value="weekly">Weekly</option>
+                        <option value="monthly">Monthly</option>
+                    </select>
+                </div>
+
+                <div>
                     <div class="flex items-center justify-between mb-1.5">
                         <label class="block text-sm font-medium text-gray-700 dark:text-gray-300">Contact Phone (for WhatsApp)</label>
                         <button type="button" onclick="openContactSelector('edit-task-phone')" class="text-xs text-blue-600 dark:text-blue-400 hover:underline flex items-center gap-1 font-bold bg-transparent border-none outline-none">
@@ -349,6 +369,15 @@ include 'includes/sidebar.php';
                     <span class="inline-flex items-center gap-1.5 text-xs font-bold text-gray-850 dark:text-white">
                         <i class="ph ph-calendar text-blue-500"></i> <span id="detail-due-date">May 27, 2026</span>
                     </span>
+                </div>
+            </div>
+
+            <!-- Recurrence Indicator -->
+            <div id="detail-recurrence-container" class="hidden bg-purple-500/10 border border-purple-500/20 p-3 rounded-xl flex items-center gap-2">
+                <i class="ph ph-arrows-clockwise text-purple-400 text-sm"></i>
+                <div class="text-xs">
+                    <span class="text-gray-400">Repeats:</span>
+                    <span class="font-bold text-purple-400" id="detail-recurrence">Weekly</span>
                 </div>
             </div>
 
@@ -650,7 +679,8 @@ include 'includes/sidebar.php';
                 project_id: t.project_id,
                 project_name: t.project_name,
                 project_color: t.project_color,
-                task_phone: t.phone
+                task_phone: t.phone,
+                recurrence: t.recurrence
             }
         }));
 
@@ -723,6 +753,7 @@ include 'includes/sidebar.php';
                 let priority = arg.event.extendedProps.priority;
                 let projColor = arg.event.extendedProps.project_color || '#3b82f6';
                 let assigneeName = arg.event.extendedProps.assignee_name;
+                let recurrence = arg.event.extendedProps.recurrence;
 
                 let el = document.createElement('div');
                 el.className = `fc-custom-event p-1 rounded-lg flex flex-col justify-between h-full border-l-4 shadow-xs transition-all duration-300 ${isCompleted ? 'opacity-60 line-through' : ''}`;
@@ -749,6 +780,14 @@ include 'includes/sidebar.php';
 
                 topRow.appendChild(titleEl);
                 topRow.appendChild(statusIcon);
+
+                if (recurrence && recurrence !== 'none') {
+                    let recurIcon = document.createElement('i');
+                    recurIcon.className = 'ph ph-arrows-clockwise text-purple-500 text-[9px] shrink-0 ml-1';
+                    recurIcon.title = `Repeats ${recurrence}`;
+                    topRow.appendChild(recurIcon);
+                }
+
                 el.appendChild(topRow);
 
                 let bottomRow = document.createElement('div');
@@ -803,6 +842,7 @@ include 'includes/sidebar.php';
         const priority = document.getElementById('taskPriority').value;
         const dueDate = document.getElementById('taskDueDate').value;
         const phone = document.getElementById('taskPhone').value;
+        const recurrence = document.getElementById('taskRecurrence').value;
 
         const result = await fetchAPI('api/tasks.php', 'POST', {
             title: title,
@@ -811,7 +851,8 @@ include 'includes/sidebar.php';
             assigned_to: assigneeId,
             priority: priority,
             due_date: dueDate,
-            phone: phone
+            phone: phone,
+            recurrence: recurrence
         });
 
         if (result.success) {
@@ -837,6 +878,16 @@ include 'includes/sidebar.php';
         document.getElementById('detail-title').innerText = activeTask.title;
         document.getElementById('detail-desc').innerText = activeTask.description || 'No description provided.';
         document.getElementById('detail-due-date').innerText = new Date(activeTask.due_date).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+        
+        // Recurrence Indicator
+        const recurContainer = document.getElementById('detail-recurrence-container');
+        const recurText = document.getElementById('detail-recurrence');
+        if (activeTask.recurrence && activeTask.recurrence !== 'none') {
+            recurContainer.classList.remove('hidden');
+            recurText.innerText = activeTask.recurrence.charAt(0).toUpperCase() + activeTask.recurrence.slice(1);
+        } else {
+            recurContainer.classList.add('hidden');
+        }
         
         // Priority
         const priorityBadge = document.getElementById('detail-priority-badge');
@@ -910,11 +961,19 @@ include 'includes/sidebar.php';
         });
 
         if (result.success) {
-            showToast('Event status updated successfully!', 'success');
-            
-            // Instantly update the local task copy & model
-            const task = allTasks.find(t => String(t.id) === String(activeTask.id));
-            if (task) task.status = newStatus;
+            if (result.recurred) {
+                showToast('Recurring task completed! Next occurrence scheduled.', 'success');
+                const task = allTasks.find(t => String(t.id) === String(activeTask.id));
+                if (task) {
+                    task.status = 'todo';
+                    task.due_date = result.next_due_date.substring(0, 10);
+                }
+                closeDetailsModal();
+            } else {
+                showToast('Event status updated successfully!', 'success');
+                const task = allTasks.find(t => String(t.id) === String(activeTask.id));
+                if (task) task.status = newStatus;
+            }
             
             // Re-render calendar events
             applyFilters();
@@ -923,10 +982,12 @@ include 'includes/sidebar.php';
             activeTask.status = newStatus;
             ['todo', 'in_progress', 'completed'].forEach(s => {
                 const btn = document.getElementById(`status-btn-${s}`);
-                if (s === newStatus) {
-                    btn.classList.add('ring-2', 'ring-blue-500', 'border-transparent', 'scale-105');
-                } else {
-                    btn.classList.remove('ring-2', 'ring-blue-500', 'border-transparent', 'scale-105');
+                if (btn) {
+                    if (s === newStatus) {
+                        btn.classList.add('ring-2', 'ring-blue-500', 'border-transparent', 'scale-105');
+                    } else {
+                        btn.classList.remove('ring-2', 'ring-blue-500', 'border-transparent', 'scale-105');
+                    }
                 }
             });
         } else {
@@ -965,6 +1026,7 @@ include 'includes/sidebar.php';
         document.getElementById('edit-task-priority').value = activeTask.priority || 'medium';
         document.getElementById('edit-task-due-date').value = activeTask.due_date;
         document.getElementById('edit-task-phone').value = activeTask.task_phone || '';
+        document.getElementById('edit-task-recurrence').value = activeTask.recurrence || 'none';
 
         editTaskModal.classList.remove('hidden');
     }
@@ -981,6 +1043,7 @@ include 'includes/sidebar.php';
         const priority = document.getElementById('edit-task-priority').value;
         const dueDate = document.getElementById('edit-task-due-date').value;
         const phone = document.getElementById('edit-task-phone').value;
+        const recurrence = document.getElementById('edit-task-recurrence').value;
 
         const result = await fetchAPI('api/tasks.php', 'PUT', {
             id: id,
@@ -990,7 +1053,8 @@ include 'includes/sidebar.php';
             assigned_to: assigneeId,
             priority: priority,
             due_date: dueDate,
-            phone: phone
+            phone: phone,
+            recurrence: recurrence
         });
 
         if (result.success) {

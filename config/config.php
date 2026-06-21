@@ -63,6 +63,16 @@ try {
         // Ignore
     }
 
+    // Auto-migration: Check if 'recurrence' column exists in 'tasks' table
+    try {
+        $checkColumnTaskRecurrence = $pdo->query("SHOW COLUMNS FROM tasks LIKE 'recurrence'");
+        if (!$checkColumnTaskRecurrence->fetch()) {
+            $pdo->exec("ALTER TABLE tasks ADD COLUMN recurrence ENUM('none', 'daily', 'weekly', 'monthly') DEFAULT 'none'");
+        }
+    } catch (PDOException $ex) {
+        // Ignore
+    }
+
     // Auto-migration: Create contacts table if missing
     try {
         $pdo->exec("CREATE TABLE IF NOT EXISTS `contacts` (
