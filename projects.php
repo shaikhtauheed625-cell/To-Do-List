@@ -12,7 +12,7 @@ include 'includes/sidebar.php';
 
 <!-- Main Content -->
 <main class="flex-1 flex flex-col h-[100dvh] overflow-hidden bg-gray-50 dark:bg-[#0B1120] transition-colors">
-    <header class="h-20 bg-white dark:bg-gray-900 border-b border-gray-200 dark:border-gray-800 flex items-center justify-between px-6 shrink-0 transition-colors">
+    <header class="h-20 bg-white dark:bg-[#0B1120] border-b border-gray-200 dark:border-gray-800/50 flex items-center justify-between px-6 shrink-0 transition-colors">
         <div class="flex items-center gap-4">
             <button id="sidebar-toggle" title="Toggle Sidebar" class="lg:hidden text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-white">
                 <i class="ph ph-list text-2xl"></i>

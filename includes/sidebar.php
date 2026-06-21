@@ -12,7 +12,7 @@ if (!empty($_SESSION['profile_image']) && $_SESSION['profile_image'] !== 'defaul
 <aside id="sidebar" class="sidebar fixed inset-y-0 left-0 z-30 w-64 transform -translate-x-full lg:translate-x-0 lg:static lg:inset-0 flex flex-col h-[100dvh] bg-[#0B1120]/95 backdrop-blur-2xl transition-transform duration-300">
     
     <!-- Fixed Branded Header -->
-    <div class="flex items-center justify-center h-20 border-b border-gray-800/50 relative overflow-hidden group cursor-pointer shrink-0">
+    <div class="flex items-center justify-center h-20 border-b border-gray-200 dark:border-gray-800/50 relative overflow-hidden group cursor-pointer shrink-0">
         <div class="absolute inset-0 bg-gradient-to-r from-blue-500/10 to-cyan-500/10 opacity-0 group-hover:opacity-100 transition-opacity"></div>
         <div class="flex items-center justify-center px-4 relative z-10 hover-lift w-full">
             <img src="<?php echo SITE_URL; ?>/assets/images/logo.png" alt="task.n1space.com" class="max-h-12 w-auto object-contain">

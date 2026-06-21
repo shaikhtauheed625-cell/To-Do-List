@@ -17,7 +17,7 @@ include 'includes/sidebar.php';
 <!-- Main Content -->
 <main class="flex-1 flex flex-col h-[100dvh] overflow-hidden bg-gray-50 dark:bg-[#0B1120] text-slate-800 dark:text-gray-200 transition-colors">
     <!-- Top Header -->
-    <header class="h-20 bg-white dark:bg-gray-900 border-b border-gray-250 dark:border-gray-800/80 flex items-center justify-between px-6 shrink-0 z-10 transition-colors">
+    <header class="h-20 bg-white dark:bg-[#0B1120] border-b border-gray-250 dark:border-gray-800/50 flex items-center justify-between px-6 shrink-0 z-10 transition-colors">
         <div class="flex items-center gap-4">
             <button id="sidebar-toggle" title="Toggle Sidebar" class="lg:hidden text-gray-500 hover:text-gray-800 dark:text-gray-400 dark:hover:text-white transition-colors">
                 <i class="ph ph-list text-2xl"></i>
