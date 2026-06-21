@@ -14,11 +14,8 @@ if (!empty($_SESSION['profile_image']) && $_SESSION['profile_image'] !== 'defaul
     <!-- Fixed Branded Header -->
     <div class="flex items-center justify-center h-20 border-b border-gray-800/50 relative overflow-hidden group cursor-pointer shrink-0">
         <div class="absolute inset-0 bg-gradient-to-r from-blue-500/10 to-cyan-500/10 opacity-0 group-hover:opacity-100 transition-opacity"></div>
-        <div class="flex items-center gap-3 relative z-10 hover-lift">
-            <div class="w-8 h-8 rounded-lg bg-gradient-to-br from-blue-500 to-cyan-400 flex items-center justify-center">
-                <i class="ph-bold ph-check text-white text-xl"></i>
-            </div>
-            <span class="text-white text-xl font-bold tracking-tight">TaskFlow<span class="text-cyan-400">Pro</span></span>
+        <div class="flex items-center justify-center px-4 relative z-10 hover-lift w-full">
+            <img src="<?php echo SITE_URL; ?>/assets/images/logo.png" alt="task.n1space.com" class="max-h-12 w-auto object-contain">
         </div>
     </div>
 

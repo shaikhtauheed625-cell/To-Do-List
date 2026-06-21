@@ -172,7 +172,7 @@ CREATE TABLE IF NOT EXISTS `contacts` (
 
 -- Insert Default Settings
 INSERT IGNORE INTO `settings` (`setting_key`, `setting_value`) VALUES
-('site_name', 'TaskFlow Pro'),
+('site_name', 'task.n1space.com'),
 ('theme', 'light'),
 ('allow_registration', 'true');
 

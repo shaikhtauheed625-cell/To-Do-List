@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title><?php echo isset($page_title) ? $page_title . ' - TaskFlow Pro' : 'TaskFlow Pro'; ?></title>
+    <title><?php echo isset($page_title) ? $page_title . ' - task.n1space.com' : 'task.n1space.com'; ?></title>
     
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
