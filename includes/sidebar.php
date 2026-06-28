@@ -87,6 +87,11 @@ if (!empty($_SESSION['profile_image']) && $_SESSION['profile_image'] !== 'defaul
             Notes & Docs
         </a>
 
+        <a href="<?php echo SITE_URL; ?>/applications.php" class="flex items-center gap-3 px-4 py-2.5 rounded-xl transition-all group <?php echo (basename($_SERVER['PHP_SELF']) == 'applications.php') ? 'bg-gradient-to-r from-violet-500/20 to-purple-500/10 text-violet-400 font-semibold border border-violet-500/20' : 'text-gray-400 hover:bg-white/5 hover:text-white hover:translate-x-1'; ?>">
+            <i class="ph-fill ph-files text-xl <?php echo (basename($_SERVER['PHP_SELF']) == 'applications.php') ? 'text-violet-400' : 'group-hover:text-violet-400 transition-colors'; ?>"></i>
+            Applications
+        </a>
+
         <?php if (isAdmin()): ?>
         <p class="text-[10px] font-bold text-gray-500 uppercase tracking-widest mt-6 mb-3 px-4">Administrative</p>
         
