@@ -168,6 +168,25 @@ async function checkReminders() {
     }
 }
 
+// Check for real-time ticket activity & new assignments
+async function checkNotifications() {
+    let lastPoll = localStorage.getItem('last_notif_poll') || (Math.floor(Date.now() / 1000) - 120);
+    const res = await fetchAPI(`api/notifications.php?since=${lastPoll}`);
+    
+    if (res && res.success) {
+        // Save the server time to avoid clock drift issues
+        if (res.server_time) {
+            localStorage.setItem('last_notif_poll', res.server_time);
+        }
+        
+        if (res.data && res.data.length > 0) {
+            res.data.forEach(notif => {
+                showBrowserNotification(notif.title, notif.body);
+            });
+        }
+    }
+}
+
 function showBrowserNotification(title, body) {
     if (!('Notification' in window)) return;
     
@@ -178,15 +197,17 @@ function showBrowserNotification(title, body) {
     }
 }
 
-// Request permission and poll every 30 seconds
+// Request permission and poll periodically
 document.addEventListener('DOMContentLoaded', () => {
     if ('Notification' in window) {
         updateNotificationButton(Notification.permission);
     }
     
-    // Check every 30 seconds
+    // Poll legacy reminders every 30s
     setInterval(checkReminders, 30000);
-    
-    // Initial check after 3 seconds
     setTimeout(checkReminders, 3000);
+
+    // Poll live notifications every 15s for faster ticket updates
+    setInterval(checkNotifications, 15000);
+    setTimeout(checkNotifications, 5000);
 });
