@@ -2,9 +2,16 @@
 <html lang="en" class="light">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <title><?php echo isset($page_title) ? $page_title . ' - task.n1space.com' : 'task.n1space.com'; ?></title>
     <link rel="icon" type="image/png" href="<?php echo SITE_URL; ?>/assets/images/favicon.png?v=1">
+
+    <!-- Android status bar brand colour -->
+    <meta name="theme-color" content="#0B1120">
+    <!-- iOS/PWA full-screen support -->
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="mobile-web-app-capable" content="yes">
     
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -30,6 +37,18 @@
             document.documentElement.style.backgroundColor = '#0B1120';
             localStorage.setItem('theme', 'dark'); // Enforce dark theme default
         }
+    </script>
+    <!-- Android App Detection: adds 'in-android-app' class to <body> when running inside our WebView -->
+    <script>
+        (function() {
+            if (navigator.userAgent.indexOf('TaskFlowProApp') !== -1) {
+                document.documentElement.classList.add('in-android-app');
+                // Apply immediately to body when DOM is ready
+                document.addEventListener('DOMContentLoaded', function() {
+                    document.body.classList.add('in-android-app');
+                });
+            }
+        })();
     </script>
     <script src="https://cdn.tailwindcss.com"></script>
     <script>

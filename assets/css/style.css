@@ -276,3 +276,164 @@ button.text-gray-500:active {
     -ms-overflow-style: none !important;
     scrollbar-width: none !important;
 }
+
+/* ============================================================
+   MOBILE & ANDROID APP IMPROVEMENTS
+   ============================================================ */
+
+/* 1. Eliminate 300ms tap delay on all touch devices */
+* {
+    touch-action: manipulation;
+}
+
+/* 2. Fix input zoom bug on iOS & Android (must be ≥16px) */
+@media (max-width: 768px) {
+    input[type="text"],
+    input[type="email"],
+    input[type="password"],
+    input[type="number"],
+    input[type="search"],
+    input[type="tel"],
+    input[type="url"],
+    input[type="date"],
+    input[type="datetime-local"],
+    select,
+    textarea {
+        font-size: 16px !important;
+    }
+}
+
+/* 3. Safe area insets — supports notch phones (iPhone X+, Android) */
+body {
+    padding-top: env(safe-area-inset-top);
+    padding-left: env(safe-area-inset-left);
+    padding-right: env(safe-area-inset-right);
+    padding-bottom: env(safe-area-inset-bottom);
+}
+
+/* 4. Remove hover effects on touch screens (hover-lift was firing on tap) */
+@media (hover: none) and (pointer: coarse) {
+    .hover-lift:hover {
+        transform: none !important;
+        box-shadow: none !important;
+    }
+    .task-card:hover,
+    .card-3d:hover {
+        transform: none !important;
+        box-shadow: 0 20px 40px -15px rgba(0,0,0,0.4) !important;
+    }
+    button.bg-blue-600:hover,
+    .btn-primary:hover {
+        transform: none !important;
+    }
+    /* Add active (tap) feedback instead */
+    .hover-lift:active {
+        transform: scale(0.97) !important;
+        transition: transform 0.1s ease !important;
+    }
+    .task-card:active,
+    .card-3d:active {
+        transform: scale(0.98) !important;
+    }
+    button:active,
+    a:active {
+        opacity: 0.75;
+    }
+}
+
+/* 5. Hide scrollbars on mobile for cleaner look */
+@media (max-width: 768px) {
+    ::-webkit-scrollbar {
+        display: none;
+        width: 0;
+        height: 0;
+    }
+    * {
+        -ms-overflow-style: none;
+        scrollbar-width: none;
+    }
+}
+
+/* 6. Improve tap highlight (remove grey flash on Android, add smooth brand color) */
+* {
+    -webkit-tap-highlight-color: rgba(99, 102, 241, 0.15);
+}
+a, button {
+    -webkit-tap-highlight-color: rgba(99, 102, 241, 0.2);
+}
+
+/* 7. Better touch scroll momentum for panels */
+.overflow-y-auto,
+.overflow-x-auto,
+nav,
+.sidebar {
+    -webkit-overflow-scrolling: touch;
+}
+
+/* 8. Prevent text selection on UI elements (sidebar links, buttons) */
+.sidebar a,
+button,
+.badge-low,
+.badge-medium,
+.badge-high,
+.badge-urgent {
+    -webkit-user-select: none;
+    user-select: none;
+}
+
+/* 9. Sidebar: full height on mobile using dynamic viewport height */
+@media (max-width: 1024px) {
+    #sidebar {
+        height: 100dvh !important;
+        height: 100vh; /* fallback */
+    }
+}
+
+/* 10. Android App Mode detection — when running inside the Android WebView
+       user-agent contains "TaskFlowProApp", apply app-specific styles */
+
+/* Hide browser-only elements when in the Android app */
+body.in-android-app .app-hide,
+body.in-android-app [data-hide-in-app] {
+    display: none !important;
+}
+
+/* Bottom safe area padding for phones with home gestures */
+body.in-android-app {
+    padding-bottom: max(env(safe-area-inset-bottom), 8px);
+}
+
+/* Make sidebar overlay more opaque in app (no browser chrome behind it) */
+body.in-android-app #sidebar-overlay {
+    background: rgba(0, 0, 0, 0.75) !important;
+}
+
+/* Larger touch targets for sidebar links in app mode */
+body.in-android-app .sidebar a,
+body.in-android-app .sidebar div[onclick] {
+    min-height: 48px;
+    display: flex;
+    align-items: center;
+}
+
+/* 11. Card shimmer loading effect for mobile */
+@keyframes shimmer {
+    0%   { background-position: -200% 0; }
+    100% { background-position: 200% 0; }
+}
+.skeleton {
+    background: linear-gradient(90deg, #1E293B 25%, #334155 50%, #1E293B 75%);
+    background-size: 200% 100%;
+    animation: shimmer 1.5s infinite;
+    border-radius: 12px;
+}
+
+/* 12. Smoother page transitions */
+main, .main-content, #main-content {
+    animation: pageFadeIn 0.25s ease-out;
+}
+@keyframes pageFadeIn {
+    from { opacity: 0; transform: translateY(6px); }
+    to   { opacity: 1; transform: translateY(0); }
+}
+
